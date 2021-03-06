@@ -1,5 +1,4 @@
 //@ts-nocheck
-import {ITileImages} from "../tile/utils";
 import {
     CharacterSpriteConfig,
     CharacterSpritesTypes,
@@ -8,11 +7,12 @@ import {
     mapTilesIdsToLinks
 } from './contants';
 import background from '../../assets/backgrounds/2 Background/Background.png';
+import {ITileImages} from "./types";
 
 export class Resources {
     public tileImages?: ITileImages;
     public backgroundImage?: typeof Image;
-    public charactersSpritesConfig: CharacterSpriteConfig;
+    public charactersSpritesConfig = <CharactersSpriteConfig>{};
 
     private getTileImages = () => new Promise<ITileImages>((response) => {
         const mapTilesIdsToLinksEntries = Object.entries(mapTilesIdsToLinks);
@@ -49,8 +49,6 @@ export class Resources {
     });
 
     private getCharacterSpritesConfig = () => new Promise((response) => {
-        console.log('asdasdasd');
-        // console.log(charactersSpritesImagesToLinks);
         let charactersSpritesConfig = <CharactersSpriteConfig>{};
         let count = 3 * 11;
         const charactersSpritesImagesToLinksEntries = Object.entries(charactersSpritesImagesToLinks)
@@ -95,7 +93,6 @@ export class Resources {
     ]).then(([tileImages, bgImage, characterSprites]) => {
         this.tileImages = tileImages;
         this.backgroundImage = bgImage;
-        console.log(characterSprites);
         this.charactersSpritesConfig = characterSprites;
     });
 }

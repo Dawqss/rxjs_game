@@ -33,7 +33,7 @@ export class KeyUtil {
         }
     };
 
-    private static keyNames = {
+    public static keyNames = {
         "0": 48,
         "1": 49,
         "2": 50,

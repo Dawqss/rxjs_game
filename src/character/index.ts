@@ -1,5 +1,8 @@
 //@ts-nocheck
 import {Resources} from "../resources";
+import {CharacterSpritesTypes, CharacterType} from "../resources/contants";
+import {BehaviorSubject, interval} from "rxjs";
+import {withLatestFrom} from "rxjs/operators";
 
 interface DrawOptions {
     sourceX: number;
@@ -12,34 +15,110 @@ interface DrawOptions {
     destinationHeight: number;
 }
 
-interface CharacterFrame {
+export interface CharacterFrame {
     spriteImage: typeof Image;
     drawOptions: DrawOptions;
 }
 
 export class Character {
-    drawOptions: DrawOptions;
-
-
-    constructor(private resources: Resources) {
+    private size = 48;
+    private currentAnimationType = CharacterSpritesTypes.IDLE;
+    private drawOptions: DrawOptions = {
+        sourceX: 0,
+        sourceY: 0,
+        sourceHeight: this.size,
+        sourceWidth: this.size,
+        destinationX: 290,
+        destinationY: 240,
+        destinationHeight: this.size,
+        destinationWidth: this.size
     }
 
-    public update = () => {
-        // animationFrames.image, 0, 0, 48, 48, 48, 48, 48, 48
+    private animationSpeed = 1000 / 6;
+    private animationFrame$ = interval(this.animationSpeed);
+    private updateSubj$ = new BehaviorSubject();
 
-    };
+    private framesConfig = {
+        [CharacterSpritesTypes.IDLE]: 3,
+        [CharacterSpritesTypes.IDLE_LEFT]: 3,
+        [CharacterSpritesTypes.RUN]: 5,
+        [CharacterSpritesTypes.RUN_LEFT]: 5,
+    }
 
-    public getSequenceAnimationFrames = () => {
-        const {dupa} = this.resources;
-        const tileSize = dupa.height;
-        const numberOfFrames = 6
-        return {
-            image: dupa,
-            framesStartX: new Array(numberOfFrames).fill(0).map((_, i) => i * tileSize)
+    private count = 0;
+
+    private speed = 0;
+
+    constructor(private resources: Resources, private currentConfig = resources.charactersSpritesConfig[CharacterType.WOODCUTTER]) {
+        // only idea to get good frames
+        this.animationFrame$.pipe(
+            withLatestFrom(this.updateSubj$)
+        ).subscribe((deltaTime) => {
+                const max = this.framesConfig[this.currentAnimationType];
+
+                if (this.count > max) {
+                    this.count = 0;
+                }
+                this.drawOptions.sourceX = this.count * this.size;
+                this.count++;
+
+                // console.log(deltaTime);
+            }
+        )
+    }
+
+    public update = (deltaTime, keysDown: any = {}, gameState) => {
+        const hasRightArrow = keysDown.hasOwnProperty('right_arrow');
+        const hasLeftArrowTrue = keysDown.hasOwnProperty('left_arrow');
+
+        if (!hasRightArrow && !hasLeftArrowTrue) {
+            this.updateSubj$.next(deltaTime);
+            return;
         }
+
+        const rightArrow = keysDown.right_arrow;
+        const leftArrow = keysDown.left_arrow;
+
+        console.log(keysDown);
+
+        if (rightArrow !== undefined && rightArrow) {
+            this.currentAnimationType = CharacterSpritesTypes.RUN;
+            this.drawOptions.destinationX += this.speed;
+            if (this.speed < 6) {
+                this.speed += deltaTime * 4;
+            }
+
+            return;
+        }
+
+        if (leftArrow !== undefined && leftArrow) {
+            this.currentAnimationType = CharacterSpritesTypes.RUN_LEFT;
+            this.drawOptions.destinationX -= this.speed;
+            if (this.speed < 6) {
+                this.speed += deltaTime * 4;
+            }
+            return;
+        }
+
+        if (rightArrow !== undefined && !rightArrow) {
+            this.currentAnimationType = CharacterSpritesTypes.IDLE;
+            this.speed = 0;
+            return;
+        }
+
+        if (leftArrow !== undefined && !leftArrow) {
+            this.currentAnimationType = CharacterSpritesTypes.IDLE_LEFT;
+            this.speed = 0;
+            return;
+        }
+
+        this.updateSubj$.next(deltaTime);
     };
 
-    private animateRun = () => {
-        const {dupa} = this.resources;
+    public getFrame = (): CharacterFrame => {
+        return {
+            spriteImage: this.currentConfig[this.currentAnimationType],
+            drawOptions: this.drawOptions
+        }
     };
 }

@@ -3,13 +3,14 @@ import {GameLoop} from "../game-loop";
 import {Resources} from "../resources";
 import {Draw} from "../draw";
 import {Character} from "../character";
+import {CharacterType} from "../resources/contants";
 
 export class Main {
     resources = new Resources();
 
     gameLoop: GameLoop;
     draw: Draw;
-    characters = new Map<Character>();
+    characters = new Map<CharacterType, Character>();
 
     constructor() {
         this.gameLoop = new GameLoop(this.renderGame, this.updateGameState);
@@ -17,31 +18,23 @@ export class Main {
     }
 
     public bootstrap = () => {
-        // load all classes images etc.
-        // run gameLoop
-
         this.resources.loadResources().then(() => {
-            // TODO: add enum
-            // this.characters.set('Woodcutter', new Character(this.resources));
-            // this.test();
-            // this.gameLoop.start();
+            this.characters.set(CharacterType.WOODCUTTER, new Character(this.resources));
+            this.gameLoop.start();
         })
     };
 
     private renderGame = () => {
-        console.log('dupsko');
         this.draw.drawBackground();
+
+        this.characters.forEach((character) => {
+            this.draw.drawBySpriteFrame(character.getFrame());
+        })
     };
 
-    private updateGameState = () => {
-
-    }
-
-    private test = () => {
+    private updateGameState = (deltaTime, keysDown, gameState) => {
         this.characters.forEach((character) => {
-            // const animationFrames = character.getSequenceAnimationFrames();
-            // console.log(animationFrames);
-            // this.draw.ctx.drawImage(animationFrames.image, 0, 0, 48, 48, 48, 48, 48, 48);
+            character.update(deltaTime, keysDown, gameState);
         })
     }
 }

@@ -2,6 +2,7 @@
 import json from "../../assets/maps/levelAlpha.json";
 import {Resources} from "../resources";
 import {ITileImages} from "../resources/types";
+import {CharacterFrame} from "../character";
 
 export class Draw {
     backgroundImage: typeof Image;
@@ -12,6 +13,7 @@ export class Draw {
     constructor(private resources: Resources) {
         this.gameArea = document.getElementById('game') as HTMLCanvasElement;
         this.ctx = this.gameArea.getContext('2d')!;
+        this.ctx.scale(2, 2);
     }
 
     public drawBackground() {
@@ -41,5 +43,18 @@ export class Draw {
         }
     }
 
+    public drawBySpriteFrame = ({spriteImage, drawOptions}: CharacterFrame) => {
+        const {
+            sourceX,
+            sourceY,
+            sourceWidth,
+            sourceHeight,
+            destinationX,
+            destinationY,
+            destinationWidth,
+            destinationHeight,
+        } = drawOptions;
 
+        this.ctx.drawImage(spriteImage, sourceX, sourceY, sourceWidth, sourceHeight, destinationX, destinationY, destinationWidth, destinationHeight);
+    }
 }

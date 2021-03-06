@@ -38,8 +38,10 @@ import woodcutter_craft from '../../../assets/characters/1 Woodcutter/Woodcutter
 import woodcutter_death from '../../../assets/characters/1 Woodcutter/Woodcutter_death.png';
 import woodcutter_push from '../../../assets/characters/1 Woodcutter/Woodcutter_push.png';
 import woodcutter_run from '../../../assets/characters/1 Woodcutter/Woodcutter_run.png';
+import woodcutter_run_left from '../../../assets/characters/1 Woodcutter/Woodcutter_run_left.png';
 import woodcutter_walk from '../../../assets/characters/1 Woodcutter/Woodcutter_walk.png';
 import woodcutter_idle from '../../../assets/characters/1 Woodcutter/Woodcutter_idle.png';
+import woodcutter_idle_left from '../../../assets/characters/1 Woodcutter/Woodcutter_idle_left.png';
 import woodcutter_jump from '../../../assets/characters/1 Woodcutter/Woodcutter_jump.png';
 
 import grave_robber_attack1 from '../../../assets/characters/2 GraveRobber/GraveRobber_attack1.png';
@@ -86,9 +88,11 @@ export enum CharacterSpritesTypes {
     CRAFT = 'craft',
     DEATH = 'death',
     IDLE = 'idle',
+    IDLE_LEFT = 'idle_left',
     JUMP = 'jump',
     PUSH = 'push',
     RUN = 'run',
+    RUN_LEFT = 'run_left',
     WALK = 'walk'
 }
 
@@ -99,7 +103,7 @@ export interface CharacterSpriteConfig {
 
 export type CharactersSpriteConfig = {
     [key in CharacterType]: {
-        [key in CharacterSpritesTypes]: CharacterSpriteConfig
+        [key in CharacterSpritesTypes]: typeof Image;
     }
 }
 
@@ -145,10 +149,12 @@ export const charactersSpritesImagesToLinks: CharactersSpriteLinksConfig = {
         [CharacterSpritesTypes.CRAFT]: woodcutter_craft,
         [CharacterSpritesTypes.DEATH]: woodcutter_death,
         [CharacterSpritesTypes.IDLE]: woodcutter_idle,
+        [CharacterSpritesTypes.IDLE_LEFT]: woodcutter_idle_left,
         [CharacterSpritesTypes.JUMP]: woodcutter_jump,
         [CharacterSpritesTypes.PUSH]: woodcutter_push,
         [CharacterSpritesTypes.WALK]: woodcutter_walk,
         [CharacterSpritesTypes.RUN]: woodcutter_run,
+        [CharacterSpritesTypes.RUN_LEFT]: woodcutter_run_left,
     },
     [CharacterType.GRAVE_ROBBER]: {
         [CharacterSpritesTypes.ATTACK_A]: grave_robber_attack1,

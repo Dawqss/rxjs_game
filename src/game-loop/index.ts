@@ -1,6 +1,7 @@
 //@ts-nocheck
-import {BehaviorSubject, fromEvent, Observable, of} from "rxjs";
-import {buffer, expand, filter, map, share, tap, withLatestFrom} from "rxjs/operators";
+import {BehaviorSubject, fromEvent, merge, Observable, of} from "rxjs";
+import {buffer, expand, filter, map, share, take, tap, withLatestFrom} from "rxjs/operators";
+import {KeyUtil} from "../keys.util";
 
 interface IFrameData {
     frameStartTime: number;
@@ -8,7 +9,8 @@ interface IFrameData {
 }
 
 export class GameLoop {
-    constructor(private renderHandler: (gameState: any) => void, private updateHandler: () => any) {
+
+    constructor(private renderHandler: (gameState: any) => void, private updateHandler: (deltaTime, gameState, keysDown) => void) {
     };
 
     private gameState$ = new BehaviorSubject({});
@@ -34,38 +36,34 @@ export class GameLoop {
             share()
         );
 
-    private keysDown$ = fromEvent(document, 'keydown')
-        .pipe(
-            map((event: KeyboardEvent) => {
-                // const name = KeyUtil.codeToKey('' + event.keyCode);
-                // if (name !== '') {
-                //     let keyMap = {};
-                //     keyMap[name] = event.code;
-                //     return keyMap;
-                // } else {
-                //     return undefined;
-                // }
-            }),
-            filter((keyMap) => keyMap !== undefined)
-        );
+    private keysDown$ = merge(
+        fromEvent(document, 'keydown'),
+        fromEvent(document, 'keyup')
+    ).pipe(
+        map((event: KeyboardEvent) => {
+            const name = KeyUtil.codeToKey('' + event.keyCode);
+            if (!name) {
+                return;
+            }
 
-    private keysDownPerFrame$ = this.keysDown$
-        .pipe(
-            buffer(this.frames$),
-            map((frames: Array<any>) => {
-                return frames.reduce((acc, curr) => {
-                    return Object.assign(acc, curr);
-                }, {});
-            })
-        );
+            let keyMap = [];
+            if (event.type === 'keydown') {
+                keyMap[name] = true;
+                return keyMap;
+            }
+
+            keyMap[name] = false
+
+            return keyMap;
+        }),
+        filter(keyMap => keyMap !== undefined)
+    );
 
     public start() {
         this.frames$
             .pipe(
-                withLatestFrom(this.keysDownPerFrame$, this.gameState$),
-                // HOMEWORK_OPPORTUNITY: Handle Key-up, and map to a true KeyState change object
-
-                // map(([deltaTime, keysDown, gameState]) => (deltaTime, gameState, keysDown) => console.log(deltaTime, gameState, keysDown)),
+                withLatestFrom(this.keysDown$, this.gameState$),
+                map(([deltaTime, keysDown, gameState]) => this.updateHandler(deltaTime, keysDown, gameState)),
                 tap((gameState) => this.gameState$.next(gameState))
             )
             .subscribe((gameState) => {
