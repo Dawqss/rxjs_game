@@ -1,57 +1,37 @@
 //@ts-nocheck
-import {ITileImages, loadBackgroundImage, loadTileImages} from "../tile/utils";
-import json from '../../assets/maps/levelAlpha.json';
+import {loadBackgroundImage, loadTileImages} from "../tile/utils";
+import {GameLoop} from "../game-loop";
+import {Resources} from "../resources";
+import {Draw} from "../draw";
 
 export class Main {
-    tileImages?: ITileImages;
-    backgroundImage?: typeof Image;
-    gameArea?: HTMLCanvasElement;
+    resources = new Resources();
+
+    gameLoop: GameLoop;
+    draw: Draw;
 
     ctx?: CanvasRenderingContext2D;
 
-    public bootstrap = () => {
-        Promise.all([
-            loadTileImages(),
-            loadBackgroundImage()
-        ]).then(([tileImages, bgImage]) => {
-            this.tileImages = tileImages;
-            this.backgroundImage = bgImage;
-
-            this.gameArea = document.getElementById('game') as HTMLCanvasElement;
-            this.ctx = this.gameArea.getContext('2d')!;
-            this.draw();
-        });
+    constructor() {
+        this.gameLoop = new GameLoop(this.renderGame, this.updateGameState);
+        this.draw = new Draw(this.resources);
     }
 
-    private start = () => {
+    public bootstrap = () => {
+        // load all classes images etc.
+        // run gameLoop
 
+        this.resources.loadResources().then(() => {
+            this.gameLoop.start();
+        })
     };
 
+    private renderGame = () => {
+        console.log('dupsko');
+        this.draw.drawBackground();
+    };
 
-    public draw() {
-        // idea: layers??
-        // bg first 1st
-        // character + collision 2nd
-        const size = json.tileSize;
-        const tilesTable = json.tiles;
+    private updateGameState = () => {
 
-        console.log(this.backgroundImage);
-
-        this.ctx?.drawImage(this.backgroundImage, 0, 0);
-
-        for (let i = 0; i < tilesTable.length; i++) {
-            console.log('run');
-            for (let j = 0; j < tilesTable[i].length; j++) {
-                const row = tilesTable[i];
-                const tileId = row[j];
-                const dx = j * size;
-                const dy = i * size;
-
-
-                if (tileId !== 'none') {
-                    this.ctx.drawImage(this.tileImages[tileId], dx, dy);
-                }
-            }
-        }
     }
 }

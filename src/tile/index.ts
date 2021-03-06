@@ -1,4 +1,4 @@
-import {ITileImages} from "./utils";
+import {ITileImages} from "../resources/types";
 
 export class Tile {
     static getTileImageById = (tileID: keyof ITileImages): string => {

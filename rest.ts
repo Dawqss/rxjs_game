@@ -35,27 +35,7 @@
 //     ctx.drawImage(img, 0 , 0);
 // };
 //
-// const calculateStep: (prevFrame?: IFrameData) => Observable<IFrameData> = (prevFrame?: IFrameData) => {
-//     return new Observable((observer) => {
-//
-//         requestAnimationFrame((frameStartTime) => {
-//             // Millis to seconds
-//             const deltaTime = prevFrame ? (frameStartTime - prevFrame.frameStartTime) / 1000 : 0;
-//             observer.next({
-//                 frameStartTime,
-//                 deltaTime
-//             });
-//         })
-//     })
-// };
-//
-// const frames$ = of(undefined)
-//     .pipe(
-//         expand((val) => calculateStep(val)),
-//         filter(frame => frame !== undefined),
-//         map((frame: IFrameData) => frame.deltaTime),
-//         share()
-//     )
+
 //
 // // This is our core stream of keyDown input events. It emits an object like `{"spacebar": 32}`
 // //  each time a key is pressed down.
@@ -91,16 +71,7 @@
 // const gameState$ = new BehaviorSubject({});
 //
 //
-// frames$
-//     .pipe(
-//         withLatestFrom(keysDownPerFrame$, gameState$),
-//         // HOMEWORK_OPPORTUNITY: Handle Key-up, and map to a true KeyState change object
-//         map(([deltaTime, keysDown, gameState]) => update(deltaTime, gameState, keysDown)),
-//         tap((gameState) => gameState$.next(gameState))
-//     )
-//     .subscribe((gameState) => {
-//         render(gameState);
-//     });
+
 //
 //
 // frames$
