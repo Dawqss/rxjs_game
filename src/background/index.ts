@@ -1,0 +1,5 @@
+class Background {
+    public load = () => {
+
+    }
+}

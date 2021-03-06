@@ -1,16 +1,15 @@
 //@ts-nocheck
-import {loadBackgroundImage, loadTileImages} from "../tile/utils";
 import {GameLoop} from "../game-loop";
 import {Resources} from "../resources";
 import {Draw} from "../draw";
+import {Character} from "../character";
 
 export class Main {
     resources = new Resources();
 
     gameLoop: GameLoop;
     draw: Draw;
-
-    ctx?: CanvasRenderingContext2D;
+    characters = new Map<Character>();
 
     constructor() {
         this.gameLoop = new GameLoop(this.renderGame, this.updateGameState);
@@ -22,7 +21,10 @@ export class Main {
         // run gameLoop
 
         this.resources.loadResources().then(() => {
-            this.gameLoop.start();
+            // TODO: add enum
+            // this.characters.set('Woodcutter', new Character(this.resources));
+            // this.test();
+            // this.gameLoop.start();
         })
     };
 
@@ -33,5 +35,13 @@ export class Main {
 
     private updateGameState = () => {
 
+    }
+
+    private test = () => {
+        this.characters.forEach((character) => {
+            // const animationFrames = character.getSequenceAnimationFrames();
+            // console.log(animationFrames);
+            // this.draw.ctx.drawImage(animationFrames.image, 0, 0, 48, 48, 48, 48, 48, 48);
+        })
     }
 }

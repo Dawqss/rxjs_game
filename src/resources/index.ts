@@ -1,13 +1,18 @@
 //@ts-nocheck
-import {ITileImages, loadBackgroundImage, loadTileImages} from "../tile/utils";
-import {mapTilesIdsToLinks} from './contants';
+import {ITileImages} from "../tile/utils";
+import {
+    CharacterSpriteConfig,
+    CharacterSpritesTypes,
+    CharactersSpriteConfig,
+    charactersSpritesImagesToLinks,
+    mapTilesIdsToLinks
+} from './contants';
 import background from '../../assets/backgrounds/2 Background/Background.png';
-import woodRun from '../../assets/characters/1 Woodcutter/Woodcutter_run.png';
 
 export class Resources {
     public tileImages?: ITileImages;
     public backgroundImage?: typeof Image;
-    public dupa;
+    public charactersSpritesConfig: CharacterSpriteConfig;
 
     private getTileImages = () => new Promise<ITileImages>((response) => {
         const mapTilesIdsToLinksEntries = Object.entries(mapTilesIdsToLinks);
@@ -43,26 +48,54 @@ export class Resources {
         };
     });
 
-    private getCharacterImages = () => new Promise((response) => {
+    private getCharacterSpritesConfig = () => new Promise((response) => {
+        console.log('asdasdasd');
+        // console.log(charactersSpritesImagesToLinks);
+        let charactersSpritesConfig = <CharactersSpriteConfig>{};
+        let count = 3 * 11;
+        const charactersSpritesImagesToLinksEntries = Object.entries(charactersSpritesImagesToLinks)
 
-    });
+        for (let [key, characterConfig] of charactersSpritesImagesToLinksEntries) {
+            let loadedCharacterSprite = <{
+                [key in CharacterSpritesTypes]: CharacterSpriteConfig
+            }>{}
 
-    private testLoad = () => new Promise((response) => {
-        const image = new Image();
-        image.src = woodRun;
+            for (let attack in characterConfig) {
+                const image = new Image();
 
-        image.onload = () => {
-            response(image);
-        };
+                loadedCharacterSprite = {
+                    ...loadedCharacterSprite,
+                    [key]: {
+                        ...loadedCharacterSprite[key],
+                        [attack]: image
+                    }
+                }
+
+                image.src = characterConfig[attack];
+
+                image.onload = () => {
+                    count--;
+                    if(!count) {
+                        response(charactersSpritesConfig)
+                    }
+                }
+            }
+
+            charactersSpritesConfig = {
+                ...charactersSpritesConfig,
+                ...loadedCharacterSprite
+            }
+        }
     });
 
     public loadResources = () => Promise.all([
         this.getTileImages(),
         this.getBackgroundImage(),
-        this.testLoad(),
-    ]).then(([tileImages, bgImage, dupa]) => {
+        this.getCharacterSpritesConfig()
+    ]).then(([tileImages, bgImage, characterSprites]) => {
         this.tileImages = tileImages;
         this.backgroundImage = bgImage;
-        this.dupa = dupa;
+        console.log(characterSprites);
+        this.charactersSpritesConfig = characterSprites;
     });
 }

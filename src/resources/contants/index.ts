@@ -30,6 +30,78 @@ import tile29 from '../../../assets/backgrounds/1 Tiles/Tile_29.png';
 import tile30 from '../../../assets/backgrounds/1 Tiles/Tile_30.png';
 import tile31 from '../../../assets/backgrounds/1 Tiles/Tile_31.png';
 
+import woodcutter_attack1 from '../../../assets/characters/1 Woodcutter/Woodcutter_attack1.png';
+import woodcutter_attack2 from '../../../assets/characters/1 Woodcutter/Woodcutter_attack2.png';
+import woodcutter_attack3 from '../../../assets/characters/1 Woodcutter/Woodcutter_attack3.png';
+import woodcutter_climb from '../../../assets/characters/1 Woodcutter/Woodcutter_climb.png';
+import woodcutter_craft from '../../../assets/characters/1 Woodcutter/Woodcutter_craft.png';
+import woodcutter_death from '../../../assets/characters/1 Woodcutter/Woodcutter_death.png';
+import woodcutter_push from '../../../assets/characters/1 Woodcutter/Woodcutter_push.png';
+import woodcutter_run from '../../../assets/characters/1 Woodcutter/Woodcutter_run.png';
+import woodcutter_walk from '../../../assets/characters/1 Woodcutter/Woodcutter_walk.png';
+import woodcutter_idle from '../../../assets/characters/1 Woodcutter/Woodcutter_idle.png';
+import woodcutter_jump from '../../../assets/characters/1 Woodcutter/Woodcutter_jump.png';
+
+import grave_robber_attack1 from '../../../assets/characters/2 GraveRobber/GraveRobber_attack1.png';
+import grave_robber_attack2 from '../../../assets/characters/2 GraveRobber/GraveRobber_attack2.png';
+import grave_robber_attack3 from '../../../assets/characters/2 GraveRobber/GraveRobber_attack3.png';
+import grave_robber_climb from '../../../assets/characters/2 GraveRobber/GraveRobber_climb.png';
+import grave_robber_craft from '../../../assets/characters/2 GraveRobber/GraveRobber_craft.png';
+import grave_robber_death from '../../../assets/characters/2 GraveRobber/GraveRobber_death.png';
+import grave_robber_push from '../../../assets/characters/2 GraveRobber/GraveRobber_push.png';
+import grave_robber_run from '../../../assets/characters/2 GraveRobber/GraveRobber_run.png';
+import grave_robber_walk from '../../../assets/characters/2 GraveRobber/GraveRobber_walk.png';
+import grave_robber_idle from '../../../assets/characters/2 GraveRobber/GraveRobber_idle.png';
+import grave_robber_jump from '../../../assets/characters/2 GraveRobber/GraveRobber_jump.png';
+
+import steam_man_attack1 from '../../../assets/characters/3 SteamMan/SteamMan_attack1.png';
+import steam_man_attack2 from '../../../assets/characters/3 SteamMan/SteamMan_attack2.png';
+import steam_man_attack3 from '../../../assets/characters/3 SteamMan/SteamMan_attack3.png';
+import steam_man_climb from '../../../assets/characters/3 SteamMan/SteamMan_climb.png';
+import steam_man_craft from '../../../assets/characters/3 SteamMan/SteamMan_craft.png';
+import steam_man_death from '../../../assets/characters/3 SteamMan/SteamMan_death.png';
+import steam_man_push from '../../../assets/characters/3 SteamMan/SteamMan_push.png';
+import steam_man_run from '../../../assets/characters/3 SteamMan/SteamMan_run.png';
+import steam_man_walk from '../../../assets/characters/3 SteamMan/SteamMan_walk.png';
+import steam_man_idle from '../../../assets/characters/3 SteamMan/SteamMan_idle.png';
+import steam_man_jump from '../../../assets/characters/3 SteamMan/SteamMan_jump.png';
+
+export type CharactersSpriteLinksConfig = {
+    [key in CharacterType]: {
+        [key in CharacterSpritesTypes]: string;
+    }
+}
+
+export enum CharacterType {
+    WOODCUTTER = 'WOODCUTTER',
+    GRAVE_ROBBER = 'GRAVE_ROBBER',
+    STEAM_MAN = 'STEAM_MAN'
+}
+
+export enum CharacterSpritesTypes {
+    ATTACK_A = 'attack1',
+    ATTACK_B = 'attack2',
+    ATTACK_C = 'attack3',
+    CLIMB = 'climb',
+    CRAFT = 'craft',
+    DEATH = 'death',
+    IDLE = 'idle',
+    JUMP = 'jump',
+    PUSH = 'push',
+    RUN = 'run',
+    WALK = 'walk'
+}
+
+export interface CharacterSpriteConfig {
+    spriteImage: typeof Image;
+    numberOfFrames: number;
+}
+
+export type CharactersSpriteConfig = {
+    [key in CharacterType]: {
+        [key in CharacterSpritesTypes]: CharacterSpriteConfig
+    }
+}
 
 export const mapTilesIdsToLinks = {
     tile01,
@@ -62,4 +134,46 @@ export const mapTilesIdsToLinks = {
     tile29,
     tile30,
     tile31
+}
+
+export const charactersSpritesImagesToLinks: CharactersSpriteLinksConfig = {
+    [CharacterType.WOODCUTTER]: {
+        [CharacterSpritesTypes.ATTACK_A]: woodcutter_attack1,
+        [CharacterSpritesTypes.ATTACK_B]: woodcutter_attack2,
+        [CharacterSpritesTypes.ATTACK_C]: woodcutter_attack3,
+        [CharacterSpritesTypes.CLIMB]: woodcutter_climb,
+        [CharacterSpritesTypes.CRAFT]: woodcutter_craft,
+        [CharacterSpritesTypes.DEATH]: woodcutter_death,
+        [CharacterSpritesTypes.IDLE]: woodcutter_idle,
+        [CharacterSpritesTypes.JUMP]: woodcutter_jump,
+        [CharacterSpritesTypes.PUSH]: woodcutter_push,
+        [CharacterSpritesTypes.WALK]: woodcutter_walk,
+        [CharacterSpritesTypes.RUN]: woodcutter_run,
+    },
+    [CharacterType.GRAVE_ROBBER]: {
+        [CharacterSpritesTypes.ATTACK_A]: grave_robber_attack1,
+        [CharacterSpritesTypes.ATTACK_B]: grave_robber_attack2,
+        [CharacterSpritesTypes.ATTACK_C]: grave_robber_attack3,
+        [CharacterSpritesTypes.CLIMB]: grave_robber_climb,
+        [CharacterSpritesTypes.CRAFT]: grave_robber_craft,
+        [CharacterSpritesTypes.DEATH]: grave_robber_death,
+        [CharacterSpritesTypes.IDLE]: grave_robber_idle,
+        [CharacterSpritesTypes.JUMP]: grave_robber_jump,
+        [CharacterSpritesTypes.PUSH]: grave_robber_push,
+        [CharacterSpritesTypes.WALK]: grave_robber_walk,
+        [CharacterSpritesTypes.RUN]: grave_robber_run,
+    },
+    [CharacterType.STEAM_MAN]: {
+        [CharacterSpritesTypes.ATTACK_A]: steam_man_attack1,
+        [CharacterSpritesTypes.ATTACK_B]: steam_man_attack2,
+        [CharacterSpritesTypes.ATTACK_C]: steam_man_attack3,
+        [CharacterSpritesTypes.CLIMB]: steam_man_climb,
+        [CharacterSpritesTypes.CRAFT]: steam_man_craft,
+        [CharacterSpritesTypes.DEATH]: steam_man_death,
+        [CharacterSpritesTypes.IDLE]: steam_man_idle,
+        [CharacterSpritesTypes.JUMP]: steam_man_jump,
+        [CharacterSpritesTypes.PUSH]: steam_man_push,
+        [CharacterSpritesTypes.WALK]: steam_man_walk,
+        [CharacterSpritesTypes.RUN]: steam_man_run,
+    }
 }
