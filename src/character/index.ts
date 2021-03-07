@@ -43,11 +43,13 @@ export class Character {
         [CharacterSpritesTypes.IDLE_LEFT]: 3,
         [CharacterSpritesTypes.RUN]: 5,
         [CharacterSpritesTypes.RUN_LEFT]: 5,
+        [CharacterSpritesTypes.JUMP]: 5
     }
 
-    private count = 0;
 
+    private count = 0;
     private speed = 0;
+    private isJumping = false;
 
     constructor(private resources: Resources, private currentConfig = resources.charactersSpritesConfig[CharacterType.WOODCUTTER]) {
         // only idea to get good frames
@@ -67,9 +69,20 @@ export class Character {
         )
     }
 
+
     public update = (deltaTime, keysDown: any = {}, gameState) => {
         const hasRightArrow = keysDown.hasOwnProperty('right_arrow');
         const hasLeftArrowTrue = keysDown.hasOwnProperty('left_arrow');
+        const isUpArrow = keysDown?.up_arrow;
+
+        if (isUpArrow || this.isJumping) {
+            this.currentAnimationType = CharacterSpritesTypes.JUMP;
+            this.drawOptions.destinationY -= deltaTime * 10;
+            this.isJumping = true;
+            return;
+        }
+
+        // return;
 
         if (!hasRightArrow && !hasLeftArrowTrue) {
             this.updateSubj$.next(deltaTime);
@@ -78,8 +91,6 @@ export class Character {
 
         const rightArrow = keysDown.right_arrow;
         const leftArrow = keysDown.left_arrow;
-
-        console.log(keysDown);
 
         if (rightArrow !== undefined && rightArrow) {
             this.currentAnimationType = CharacterSpritesTypes.RUN;
