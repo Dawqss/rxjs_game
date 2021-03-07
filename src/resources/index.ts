@@ -9,10 +9,14 @@ import {
 import background from '../../assets/backgrounds/2 Background/Background.png';
 import {ITileImages} from "./types";
 
+import sprite from '../../assets/Premade Knight Sheets/spritesheet-knight-black.png';
+import spriteMeta from '../../assets/Premade Knight Sheets/spritesheet-knight-black.json';
+
 export class Resources {
     public tileImages?: ITileImages;
     public backgroundImage?: typeof Image;
     public charactersSpritesConfig = <CharactersSpriteConfig>{};
+    public characterConfig = {};
 
     private getTileImages = () => new Promise<ITileImages>((response) => {
         const mapTilesIdsToLinksEntries = Object.entries(mapTilesIdsToLinks);
@@ -86,13 +90,23 @@ export class Resources {
         }
     });
 
+    public getCharacterSprites = () => new Promise((resolve) => {
+        const image = new Image();
+
+        image.src = sprite;
+        image.onload = () => resolve(image);
+    });
+
     public loadResources = () => Promise.all([
         this.getTileImages(),
         this.getBackgroundImage(),
-        this.getCharacterSpritesConfig()
-    ]).then(([tileImages, bgImage, characterSprites]) => {
+        this.getCharacterSpritesConfig(),
+        this.getCharacterSprites()
+    ]).then(([tileImages, bgImage, characterSprites, charSprite]) => {
         this.tileImages = tileImages;
         this.backgroundImage = bgImage;
         this.charactersSpritesConfig = characterSprites;
+        this.characterConfig = charSprite;
+        // console.log(spriteMeta);
     });
 }

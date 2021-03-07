@@ -3,6 +3,7 @@ import {Resources} from "../resources";
 import {CharacterSpritesTypes, CharacterType} from "../resources/contants";
 import {BehaviorSubject, interval} from "rxjs";
 import {withLatestFrom} from "rxjs/operators";
+import {animationFramesSpriteGrid, sprites} from "../resources/contants/frames-positions";
 
 interface DrawOptions {
     sourceX: number;
@@ -21,7 +22,7 @@ export interface CharacterFrame {
 }
 
 export class Character {
-    private size = 48;
+    private size = 40;
     private currentAnimationType = CharacterSpritesTypes.IDLE;
     private drawOptions: DrawOptions = {
         sourceX: 0,
@@ -33,6 +34,8 @@ export class Character {
         destinationHeight: this.size,
         destinationWidth: this.size
     }
+
+    private framesTest = animationFramesSpriteGrid["RollingForward"];
 
     private animationSpeed = 1000 / 6;
     private animationFrame$ = interval(this.animationSpeed);
@@ -46,23 +49,32 @@ export class Character {
         [CharacterSpritesTypes.JUMP]: 5
     }
 
-
     private count = 0;
     private speed = 0;
     private isJumping = false;
 
     constructor(private resources: Resources, private currentConfig = resources.charactersSpritesConfig[CharacterType.WOODCUTTER]) {
-        // only idea to get good frames
         this.animationFrame$.pipe(
             withLatestFrom(this.updateSubj$)
         ).subscribe((deltaTime) => {
-                const max = this.framesConfig[this.currentAnimationType];
+                const max = this.framesTest.length;
+                const obj = {...this.framesTest[this.count]};
 
-                if (this.count > max) {
+                console.log(this.framesTest);
+                // console.log(deltaTime);
+
+                this.drawOptions.sourceX = obj.x;
+                this.drawOptions.sourceY = obj.y;
+                this.drawOptions.destinationX = obj.x;
+                this.drawOptions.destinationY = obj.y;
+                this.drawOptions.sourceWidth = obj.width;
+                this.drawOptions.sourceHeight = obj.height;
+
+                this.count++;
+
+                if (this.count >= max) {
                     this.count = 0;
                 }
-                this.drawOptions.sourceX = this.count * this.size;
-                this.count++;
 
                 // console.log(deltaTime);
             }
@@ -71,65 +83,72 @@ export class Character {
 
 
     public update = (deltaTime, keysDown: any = {}, gameState) => {
-        const hasRightArrow = keysDown.hasOwnProperty('right_arrow');
-        const hasLeftArrowTrue = keysDown.hasOwnProperty('left_arrow');
-        const isUpArrow = keysDown?.up_arrow;
-
-        if (isUpArrow || this.isJumping) {
-            this.currentAnimationType = CharacterSpritesTypes.JUMP;
-            this.drawOptions.destinationY -= deltaTime * 10;
-            this.isJumping = true;
-            return;
-        }
-
-        // return;
-
-        if (!hasRightArrow && !hasLeftArrowTrue) {
-            this.updateSubj$.next(deltaTime);
-            return;
-        }
-
-        const rightArrow = keysDown.right_arrow;
-        const leftArrow = keysDown.left_arrow;
-
-        if (rightArrow !== undefined && rightArrow) {
-            this.currentAnimationType = CharacterSpritesTypes.RUN;
-            this.drawOptions.destinationX += this.speed;
-            if (this.speed < 6) {
-                this.speed += deltaTime * 4;
-            }
-
-            return;
-        }
-
-        if (leftArrow !== undefined && leftArrow) {
-            this.currentAnimationType = CharacterSpritesTypes.RUN_LEFT;
-            this.drawOptions.destinationX -= this.speed;
-            if (this.speed < 6) {
-                this.speed += deltaTime * 4;
-            }
-            return;
-        }
-
-        if (rightArrow !== undefined && !rightArrow) {
-            this.currentAnimationType = CharacterSpritesTypes.IDLE;
-            this.speed = 0;
-            return;
-        }
-
-        if (leftArrow !== undefined && !leftArrow) {
-            this.currentAnimationType = CharacterSpritesTypes.IDLE_LEFT;
-            this.speed = 0;
-            return;
-        }
+        // const hasRightArrow = keysDown.hasOwnProperty('right_arrow');
+        // const hasLeftArrowTrue = keysDown.hasOwnProperty('left_arrow');
+        // const isUpArrow = keysDown?.up_arrow;
+        //
+        // if (isUpArrow || this.isJumping) {
+        //     this.currentAnimationType = CharacterSpritesTypes.JUMP;
+        //     this.drawOptions.destinationY -= deltaTime * 10;
+        //     this.isJumping = true;
+        //     return;
+        // }
+        //
+        // // return;
+        //
+        // if (!hasRightArrow && !hasLeftArrowTrue) {
+        //     this.updateSubj$.next(deltaTime);
+        //     return;
+        // }
+        //
+        // const rightArrow = keysDown.right_arrow;
+        // const leftArrow = keysDown.left_arrow;
+        //
+        // if (rightArrow !== undefined && rightArrow) {
+        //     this.currentAnimationType = CharacterSpritesTypes.RUN;
+        //     this.drawOptions.destinationX += this.speed;
+        //     if (this.speed < 6) {
+        //         this.speed += deltaTime * 4;
+        //     }
+        //
+        //     return;
+        // }
+        //
+        // if (leftArrow !== undefined && leftArrow) {
+        //     this.currentAnimationType = CharacterSpritesTypes.RUN_LEFT;
+        //     this.drawOptions.destinationX -= this.speed;
+        //     if (this.speed < 6) {
+        //         this.speed += deltaTime * 4;
+        //     }
+        //     return;
+        // }
+        //
+        // if (rightArrow !== undefined && !rightArrow) {
+        //     this.currentAnimationType = CharacterSpritesTypes.IDLE;
+        //     this.speed = 0;
+        //     return;
+        // }
+        //
+        // if (leftArrow !== undefined && !leftArrow) {
+        //     this.currentAnimationType = CharacterSpritesTypes.IDLE_LEFT;
+        //     this.speed = 0;
+        //     return;
+        // }
 
         this.updateSubj$.next(deltaTime);
     };
 
     public getFrame = (): CharacterFrame => {
         return {
-            spriteImage: this.currentConfig[this.currentAnimationType],
+            spriteImage: this.resources.characterConfig,
             drawOptions: this.drawOptions
         }
-    };
+    }
+
+    // public getFrame = (): CharacterFrame => {
+    //     return {
+    //         spriteImage: this.currentConfig[this.currentAnimationType],
+    //         drawOptions: this.drawOptions
+    //     }
+    // };
 }

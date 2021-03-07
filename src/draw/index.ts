@@ -56,5 +56,6 @@ export class Draw {
         } = drawOptions;
 
         this.ctx.drawImage(spriteImage, sourceX, sourceY, sourceWidth, sourceHeight, destinationX, destinationY, destinationWidth, destinationHeight);
+        this.ctx.font = '12px serif';
     }
 }

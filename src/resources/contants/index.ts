@@ -183,3 +183,4 @@ export const charactersSpritesImagesToLinks: CharactersSpriteLinksConfig = {
         [CharacterSpritesTypes.RUN]: steam_man_run,
     }
 }
+
