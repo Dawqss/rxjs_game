@@ -36,5 +36,18 @@ export class Main {
         this.characters.forEach((character) => {
             character.update(deltaTime, keysDown, gameState);
         })
+
+        
+
+        // gameObjecty -> ktore moga sie ruszac(miala by jakies jak zmienic swoja projekcje po dotknieciu),
+        // nie moge sie ruszac (nie moga sie ruszac ale maja wplyw na postac, np nie prze przez nie przejsc),
+        // i sa poruszane przez usera(character, characterInCar etc.)
+
+
+        // gameLoop
+        // 1. rendereowanie blokow widocznych na ekranie
+        // 2. wysylanie informacji o nieruszalnych blokach do postaci
+        // 3. wyrenderowanie ruchow postaci na podstawi usera inputa
+        // 4. przekazanie ruchow postaci do obiektow ktore moga sie poruszac
     }
 }

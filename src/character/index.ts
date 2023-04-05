@@ -20,6 +20,8 @@ export interface CharacterFrame {
     drawOptions: DrawOptions;
 }
 
+// Create abstract class to draw elements//
+
 export class Character {
     private size = 48;
     private currentAnimationType = CharacterSpritesTypes.IDLE;
